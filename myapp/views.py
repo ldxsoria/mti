@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import  AuthenticationForm #SIGNIN
 
+#MODELOS
+from .models import Ticket
+
 #PROJECTS ROUTES
 from django.contrib.auth import login, logout, authenticate #para crear cookie de inicio de sesion
 from django.contrib.auth.decorators import login_required #MAIN
@@ -29,6 +32,35 @@ def signin(request):
                 login(request, user)
                 return redirect('main/')
 
-#@login_required
+@login_required
+def signout(request):
+    logout(request)
+    return redirect('/')
+
+@login_required
 def main(request):
     return render(request, 'main.html')
+
+#TICKET###############################################################################################
+
+@login_required      
+def tickets(request):
+    if request.user.is_staff:
+        #https://stackoverflow.com/questions/7590692/django-get-unique-object-list-from-queryset
+        tickets = Ticket.objects.all().exclude(completado=True)
+        #print(HistorialTicket.objects.order_by('id').distinct('id'))
+        #print(HistorialTicket.objects.all().distinct('ticket_id'))
+        #print(HistorialTicket.objects.order_by('-id').distinct())
+        #x = Ticket.registros.estado
+        #print(x)
+        return render(request, 'tickets/tickets.html', {
+            'tickets': tickets,
+            'title': 'Tickets nuevos'
+        })
+    else:
+        #tickets = Ticket.objects.filter(user=request.user, estado='Registrado')
+        tickets = Ticket.objects.filter(user=request.user)
+        return render(request, 'tickets/tickets.html', {
+            'tickets': tickets,
+            'title': 'Mis tickets pendientes'
+        })

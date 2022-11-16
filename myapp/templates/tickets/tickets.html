@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <header>
+            <h1 class="display-3 text-center m-5">{{title}}</h1>
+        </header>
+        {% for ticket in tickets %}
+        <div class="col-md-4 mb-2">
+            <div class="card-group">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title display-3 text-center">Ticket #{{ticket.id}}</h5>
+                        <div class="card-text">
+                            <p><strong>Asunto: </strong>{{ticket.asunto}}</p>
+                            <p><strong>Asunto: </strong>{{ticket.lugar}}</p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary" onclick="location.href='{# url 'ticket_detail' ticket.id #}'">
+                                Ver más
+                            </button>
+                            <button class="btn btn-dark">
+                                Atendido
+                            </button>
+                            <form action="{# url 'delete_ticket' ticket.id #}" method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-danger">
+                                    Cancelar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted"><strong>Solicitante: </strong>{{ticket.solicitante}} </small>
+                            <br>
+                        <small class="text-muted"><strong>Registrado el </strong>{{ticket.fecha_solicitud}} a las {{ticket.hora_solicitud}}</small>
+                    </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+</main>
+{% endblock %}

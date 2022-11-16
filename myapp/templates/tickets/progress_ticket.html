@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="display-4">Ticket #{{registro.ticket_id}}</h1>
+        <div class="col-md mt-4">
+            <h1 class="display-3"> Historial </h1>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">ID HISTORIAL</th>
+                    <th scope="col">ESTADO</th>
+                    <th scope="col">FECHA</th>
+                    <th scope="col">HORA</th>
+                    <th scope="col">RESPONSABLE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for registro in registros %}
+                  <tr>
+                    <th scope="row"># {{registro.id}}</th>
+                    <td>{{registro.estado}}</td>
+                    <td>{{registro.fecha_estado}}</td>
+                    <td>{{registro.hora_estado}}</td>
+                    <td>{{registro.responsable}}</td>
+                  </tr>
+                {% endfor%}
+                </tbody>
+              </table>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -17,6 +17,9 @@ class EstadosTicket(models.Model):
     estado = models.SmallIntegerField(primary_key=True)
     desc = models.CharField(max_length=20)
 
+    def __str__(self):
+        return self.desc
+
 class Registro(models.Model):
     #FK
     responsable = models.ForeignKey(User, on_delete=models.CASCADE)

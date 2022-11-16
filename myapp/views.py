@@ -11,7 +11,7 @@ from django.contrib.auth import login, logout, authenticate #para crear cookie d
 from django.contrib.auth.decorators import login_required #MAIN
 
 #MY REQUIREMENTS
-from .forms import TicketForm
+from .forms import TicketForm, RegistroForm
 
 # Create your views here.
 def signin(request):
@@ -84,7 +84,7 @@ def create_ticket(request):
             new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=1), comment_estado='REGISTRO AUTOMATICO')
             new_registro.save()
             new_ticket.registro.add(new_registro)
-            
+            new_ticket.save()
             #------------
             return redirect('main')
             #return redirect(f'{new_ticket.id}/progress')
@@ -96,12 +96,50 @@ def create_ticket(request):
 
 @login_required
 def progress_ticket(request, ticket_id):
-    registros = Registro.objects.filter(ticket__id=ticket_id).order_by('-hora_estado', 'fecha_estado')
-    ticket = get_object_or_404(Ticket, pk=ticket_id)
-    form = TicketForm(instance=ticket)
+    if request.method == 'GET':
+        registros = Registro.objects.filter(ticket__id=ticket_id).order_by('-hora_estado', 'fecha_estado')
+        ticket = get_object_or_404(Ticket, pk=ticket_id)
+        form = TicketForm(instance=ticket)
+        formAddRegistro = RegistroForm(instance=ticket)
+        estados = EstadosTicket.objects.all()
 
-    return render(request, 'tickets/progress_ticket.html',{
-        'registros':registros,
-        'ticket': ticket,
-        'form': form,
-    })
+        return render(request, 'tickets/progress_ticket.html',{
+            'registros':registros,
+            'ticket': ticket,
+            'form': form,
+            'formAddRegistro' : formAddRegistro,
+            'estados': estados
+        })
+    else:
+        try:
+            registros = Registro.objects.filter(ticket__id=ticket_id).order_by('-hora_estado', 'fecha_estado')
+            ticket = get_object_or_404(Ticket, pk=ticket_id)
+            form = TicketForm(request.POST or None, instance=ticket)
+            if form.is_valid():
+                form.save()
+                return redirect('progress_ticket', ticket_id)
+            else:
+                print('ERROR'*100)
+        except ValueError:
+            return HttpResponse('No funciono ERROR')
+
+def add_registro_ticket(request, ticket_id): 
+    if request.method == 'GET':
+        return HttpResponse('EROR')
+    else:
+        try:
+            print(request.POST['estado'])
+            print(request.POST['comentario'])
+            ticket = Ticket.objects.get(id=ticket_id)
+            new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=request.POST['estado']), comment_estado=request.POST['comentario'])
+            new_registro.save()
+            ticket.registro.add(new_registro)
+            ticket.save()
+            #------------
+            #return redirect('main')
+            return redirect('progress_ticket', ticket_id)
+        except ValueError as e:
+            return render(request, 'tickets/create_ticket.html', {
+                'form': TicketForm,
+                'error': f'Please provide valida data > {e}'
+            })

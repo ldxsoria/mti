@@ -10,4 +10,5 @@ urlpatterns = [
     #URL TICKETS
     path('tickets/', views.tickets, name = 'tickets'),
     path('ticket/create', views.create_ticket, name = 'create_ticket' ),
+    path('ticket/<int:ticket_id>/progress', views.progress_ticket, name = 'progress_ticket')
     ]

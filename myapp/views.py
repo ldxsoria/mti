@@ -93,3 +93,11 @@ def create_ticket(request):
                 'form': TicketForm,
                 'error': f'Please provide valida data > {e}'
             })
+
+@login_required
+def progress_ticket(request, ticket_id):
+    registros = Registro.objects.filter(ticket__id=ticket_id).order_by('-hora_estado', 'fecha_estado')
+    print(registros.query)
+    return render(request, 'tickets/progress_ticket.html',{
+        'registros':registros
+    })

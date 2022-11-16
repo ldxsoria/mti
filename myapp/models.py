@@ -31,7 +31,7 @@ class Ticket(models.Model):
     hora_solicitud = models.TimeField(auto_now_add=True)
     completado = models.BooleanField(default=False)
     #UN TICKET TIENE MUCHOS REGISTROS
-    registo = models.ManyToManyField(Registro, blank=True)
+    registro = models.ManyToManyField(Registro, blank=True)
     #FK
     solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
 

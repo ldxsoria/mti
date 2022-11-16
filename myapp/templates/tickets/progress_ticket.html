@@ -4,28 +4,38 @@
 
 <main class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h1 class="display-4">Ticket #{{registro.ticket_id}}</h1>
+        <div class="col-md-8">
+            <h1 class="display-4">Ticket #{{iicket.id}}</h1>
         <div class="col-md mt-4">
             <h1 class="display-3"> Historial </h1>
             <table class="table table-striped">
                 <thead>
                   <tr>
+                    {% if user.is_staff %}
                     <th scope="col">ID HISTORIAL</th>
+                    {% endif %}
                     <th scope="col">ESTADO</th>
                     <th scope="col">FECHA</th>
                     <th scope="col">HORA</th>
                     <th scope="col">RESPONSABLE</th>
+                    {% if user.is_staff %}
+                    <th scope="col">COMENTARIO</th>
+                    {% endif %}
                   </tr>
                 </thead>
                 <tbody>
                 {% for registro in registros %}
                   <tr>
+                    {% if user.is_staff %}
                     <th scope="row"># {{registro.id}}</th>
+                    {% endif %}
                     <td>{{registro.estado}}</td>
                     <td>{{registro.fecha_estado}}</td>
                     <td>{{registro.hora_estado}}</td>
                     <td>{{registro.responsable}}</td>
+                    {% if user.is_staff %}
+                    <td>{{registro.comment_estado}}</td>
+                    {% endif %}
                   </tr>
                 {% endfor%}
                 </tbody>

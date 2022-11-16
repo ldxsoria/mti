@@ -83,7 +83,7 @@ def create_ticket(request):
             #AGREGO EL REGISTRO=Registrado AL TICKET
             new_registro = Registro(responsable=request.user, estado=1, comment_estado='REGISTRO AUTOMATICO')
             new_registro.save()
-            new_ticket.registo.add(new_registro)
+            new_ticket.registro.add(new_registro)
             
             #------------
             return redirect('main')

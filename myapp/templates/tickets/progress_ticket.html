@@ -4,8 +4,32 @@
 
 <main class="container">
     <div class="row">
-        <div class="col-md-8">
-            <h1 class="display-4">Ticket #{{iicket.id}}</h1>
+        <h1 class="display-4">Ticket #{{ticket.id}}</h1>
+        <div class="col-md-4">
+            <h1 class="display-6"> Info ticket</h1>
+            <form action="">
+                {% csrf_token %}
+                {{form.as_p}}
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary">
+                        Modificar
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h1 class="display-6"> Actualizar estado </h1>
+            <form action="">
+                {% csrf_token %}
+                {{form.as_p}}
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-primary">
+                        Modificar
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-12">
         <div class="col-md mt-4">
             <h1 class="display-3"> Historial </h1>
             <table class="table table-striped">
@@ -29,7 +53,7 @@
                     {% if user.is_staff %}
                     <th scope="row"># {{registro.id}}</th>
                     {% endif %}
-                    <td>{{registro.estado}}</td>
+                    <td>{{registro.estado.desc}}</td>
                     <td>{{registro.fecha_estado}}</td>
                     <td>{{registro.hora_estado}}</td>
                     <td>{{registro.responsable}}</td>

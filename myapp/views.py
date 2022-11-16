@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import  AuthenticationForm #SIGNIN
 
 #MODELOS
-from .models import Ticket, Registro
+from .models import Ticket, EstadosTicket, Registro
 
 #PROJECTS ROUTES
 from django.contrib.auth import login, logout, authenticate #para crear cookie de inicio de sesion
@@ -81,7 +81,7 @@ def create_ticket(request):
             new_ticket.solicitante = request.user
             new_ticket.save()
             #AGREGO EL REGISTRO=Registrado AL TICKET
-            new_registro = Registro(responsable=request.user, estado=1, comment_estado='REGISTRO AUTOMATICO')
+            new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=1), comment_estado='REGISTRO AUTOMATICO')
             new_registro.save()
             new_ticket.registro.add(new_registro)
             
@@ -97,7 +97,11 @@ def create_ticket(request):
 @login_required
 def progress_ticket(request, ticket_id):
     registros = Registro.objects.filter(ticket__id=ticket_id).order_by('-hora_estado', 'fecha_estado')
-    print(registros.query)
+    ticket = get_object_or_404(Ticket, pk=ticket_id)
+    form = TicketForm(instance=ticket)
+
     return render(request, 'tickets/progress_ticket.html',{
-        'registros':registros
+        'registros':registros,
+        'ticket': ticket,
+        'form': form,
     })

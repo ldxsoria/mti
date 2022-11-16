@@ -13,11 +13,15 @@ ESTADOS_TICKET = [
         (5, 'Cancelado'),
 
     ]
+class EstadosTicket(models.Model):
+    estado = models.SmallIntegerField(primary_key=True)
+    desc = models.CharField(max_length=20)
 
 class Registro(models.Model):
     #FK
     responsable = models.ForeignKey(User, on_delete=models.CASCADE)
-    estado = models.SmallIntegerField(blank=False, choices=ESTADOS_TICKET, default=1)
+    #estado = models.SmallIntegerField(blank=False, choices=ESTADOS_TICKET, default=1)
+    estado = models.ForeignKey(EstadosTicket, on_delete=models.CASCADE)
     comment_estado = models.TextField(max_length=120, blank=True)
     fecha_estado = models.DateField(auto_now_add=True)
     hora_estado = models.TimeField(auto_now_add=True)

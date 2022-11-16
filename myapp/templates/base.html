@@ -36,15 +36,15 @@
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tickets</a>
                 <ul class="dropdown-menu">
                   {% if user.is_staff %}
-                  <li><a class="dropdown-item" href="{# url 'tickets' #}">Pendientes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'tickets' %}">Pendientes</a></li>
                   <li><a class="dropdown-item" href="{# url 'on_progress_tickets' #}">En proceso</a></li>
                   <li><a class="dropdown-item" href="#">Completados</a></li>
                   <li><hr class="dropdown-divider"></li>
                   {% else %}
-                  <li><a class="dropdown-item" href="{# url 'tickets' #}">Mis tickets pendientes</a></li>
+                  <li><a class="dropdown-item" href="{% url 'tickets' %}">Mis tickets pendientes</a></li>
                   <li><hr class="dropdown-divider"></li>
                   {% endif %}
-                  <li><a class="dropdown-item" href="{# url 'create_ticket' #}">Crear uno nuevo</a></li>
+                  <li><a class="dropdown-item" href="{% url 'create_ticket' %}">Crear uno nuevo</a></li>
                 </ul>
               </li>            
               <li class="nav-item">

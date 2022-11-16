@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import  AuthenticationForm #SIGNIN
 
 #MODELOS
-from .models import Ticket
+from .models import Ticket, Registro
 
 #PROJECTS ROUTES
 from django.contrib.auth import login, logout, authenticate #para crear cookie de inicio de sesion
 from django.contrib.auth.decorators import login_required #MAIN
+
+#MY REQUIREMENTS
+from .forms import TicketForm
 
 # Create your views here.
 def signin(request):
@@ -58,9 +61,35 @@ def tickets(request):
             'title': 'Tickets nuevos'
         })
     else:
-        #tickets = Ticket.objects.filter(user=request.user, estado='Registrado')
-        tickets = Ticket.objects.filter(user=request.user)
+        tickets = Ticket.objects.filter(solicitante_id=request.user.id).exclude(completado=True)
         return render(request, 'tickets/tickets.html', {
             'tickets': tickets,
             'title': 'Mis tickets pendientes'
         })
+
+@login_required
+def create_ticket(request):
+    if request.method == 'GET':
+        return render(request, "tickets/create_ticket.html", {
+            'form': TicketForm
+        })
+    else:
+        try:
+            form = TicketForm(request.POST)
+            #CREO EL TICKET
+            new_ticket = form.save(commit=False)
+            new_ticket.solicitante = request.user
+            new_ticket.save()
+            #AGREGO EL REGISTRO=Registrado AL TICKET
+            new_registro = Registro(responsable=request.user, estado=1, comment_estado='REGISTRO AUTOMATICO')
+            new_registro.save()
+            new_ticket.registo.add(new_registro)
+            
+            #------------
+            return redirect('main')
+            #return redirect(f'{new_ticket.id}/progress')
+        except ValueError as e:
+            return render(request, 'tickets/create_ticket.html', {
+                'form': TicketForm,
+                'error': f'Please provide valida data > {e}'
+            })

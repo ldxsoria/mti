@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout/', views.signout, name = 'logout'),
     #URL TICKETS
     path('tickets/', views.tickets, name = 'tickets'),
+    path('ticket/create', views.create_ticket, name = 'create_ticket' ),
     ]

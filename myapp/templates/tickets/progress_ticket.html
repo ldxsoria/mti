@@ -5,6 +5,7 @@
 <main class="container">
     <div class="row">
         <h1 class="display-4">Ticket #{{ticket.id}}</h1>
+        {% if user.is_staff %}
         <div class="col-md-4">
             <h1 class="display-6"> Info ticket</h1>
             <form method="post">
@@ -40,6 +41,7 @@
                 </div>
             </form>
         </div>
+        {% endif %}
         <div class="col-md-12">
         <div class="col-md mt-4">
             <h1 class="display-3"> Historial </h1>

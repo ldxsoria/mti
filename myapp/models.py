@@ -42,6 +42,9 @@ class Ticket(models.Model):
     #FK
     solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f'Ticket {self.id} - by {self.solicitante.username}'
+
 
 class Area(models.Model):
     cod_area = models.CharField(primary_key=True, max_length=10)

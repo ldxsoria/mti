@@ -128,15 +128,15 @@ def add_registro_ticket(request, ticket_id):
         return HttpResponse('EROR')
     else:
         try:
-            print(request.POST['estado'])
-            print(request.POST['comentario'])
+            #print(request.POST['estado'])
+            #print(request.POST['comentario'])
+            #------------
             ticket = Ticket.objects.get(id=ticket_id)
             new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=request.POST['estado']), comment_estado=request.POST['comentario'])
             new_registro.save()
             ticket.registro.add(new_registro)
             ticket.save()
             #------------
-            #return redirect('main')
             return redirect('progress_ticket', ticket_id)
         except ValueError as e:
             return render(request, 'tickets/create_ticket.html', {

@@ -52,6 +52,9 @@ class Area(models.Model):
     #UN AREA TIENE MUCHOS TICKTES
     ticket = models.ManyToManyField(Ticket, blank=True)
 
+    def __str__(self):
+        return f'{self.descripcion}'
+        
 class Zona(models.Model):
     id = models.CharField(primary_key=True, max_length=5)
     name = models.CharField(max_length=25)

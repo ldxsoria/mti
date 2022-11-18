@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import  AuthenticationForm #SIGNIN
 
 #MODELOS
-from .models import Ticket, EstadosTicket, Registro
+from .models import Ticket, EstadosTicket, Registro, Area
 
 #PROJECTS ROUTES
 from django.contrib.auth import login, logout, authenticate #para crear cookie de inicio de sesion
@@ -102,13 +102,19 @@ def progress_ticket(request, ticket_id):
         form = TicketForm(instance=ticket)
         formAddRegistro = RegistroForm(instance=ticket)
         estados = EstadosTicket.objects.all()
+        areas = Area.objects.all()
+
+        area_actual = Area.objects.filter(ticket=ticket_id)
+        print(area_actual)
 
         return render(request, 'tickets/progress_ticket.html',{
             'registros':registros,
             'ticket': ticket,
             'form': form,
             'formAddRegistro' : formAddRegistro,
-            'estados': estados
+            'estados': estados,
+            'areas': areas,
+            'area_actual':area_actual
         })
     else:
         try:
@@ -125,7 +131,7 @@ def progress_ticket(request, ticket_id):
 
 def add_registro_ticket(request, ticket_id): 
     if request.method == 'GET':
-        return HttpResponse('EROR')
+        return HttpResponse('ERROR add_registro_ticket')
     else:
         try:
             #print(request.POST['estado'])
@@ -143,3 +149,18 @@ def add_registro_ticket(request, ticket_id):
                 'form': TicketForm,
                 'error': f'Please provide valida data > {e}'
             })
+
+@login_required
+def add_ticket_to_area(request, ticket_id):
+    if request.user.is_staff:
+        if request.method == 'POST':
+            #OBTENGO EL ID DE LA LA PETICION
+            ticket = Ticket.objects.get(id=ticket_id)
+            #OBTENGO EL AREA SELECIONA DE FORM POR EL POST
+            area = Area.objects.get(cod_area=request.POST['area'])
+            #ASIGNO EL TICKET A AREA
+            area.ticket.add(ticket)
+            area.save()
+    
+            return redirect('progress_ticket', ticket_id)
+        

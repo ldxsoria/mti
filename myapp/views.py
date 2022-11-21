@@ -78,17 +78,17 @@ def completed_tickets(request):
             ticket = Ticket.objects.get(id=ticket.id)
             registro =  ticket.registro.order_by('-id')[:1].values()
             read = Registro.objects.filter(ticket__id=ticket.id).order_by('-id')[:1]
-            print(read.query)
+            #print(read.query)
         
         return render(request, 'tickets/completed_tickets.html', {
             'tickets': tickets,
-            'title': 'Tickets nuevos',
+            'title': 'Tickets completados',
         })
     else:
-        tickets = Ticket.objects.filter(solicitante_id=request.user.id, completado=True)
+        tickets = Ticket.objects.filter(solicitante_id=request.user.id, completado=True).order_by('-id')
         return render(request, 'tickets/completed_tickets.html', {
             'tickets': tickets,
-            'title': 'Mis tickets pendientes'
+            'title': 'Mis tickets completados'
         })
 
 

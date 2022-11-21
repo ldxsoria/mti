@@ -37,12 +37,11 @@
                 <ul class="dropdown-menu">
                   {% if user.is_staff %}
                   <li><a class="dropdown-item" href="{% url 'tickets' %}">Pendientes</a></li>
-                  <li><a class="dropdown-item" href="{% url 'completed_tickets' %}">Completados</a></li>
-                  <li><hr class="dropdown-divider"></li>
                   {% else %}
                   <li><a class="dropdown-item" href="{% url 'tickets' %}">Mis tickets pendientes</a></li>
-                  <li><hr class="dropdown-divider"></li>
                   {% endif %}
+                  <li><a class="dropdown-item" href="{% url 'completed_tickets' %}">Completados</a></li>
+                  <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="{% url 'create_ticket' %}">Crear uno nuevo</a></li>
                 </ul>
               </li>            

@@ -3,7 +3,7 @@
 {% block content %}
 <main class="container">
     <div class="row">
-        <h1 class="display-3 m-4 text-center">Tickets completados</h1>
+        <h1 class="display-3 m-4 text-center">{{title}}</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
                 <thead>
@@ -15,7 +15,9 @@
                     <th scope="col">Responsable</th>
                     <th scope="col">Solicitante</th>
                     <th scope="col"></th>
+                    {% if request.user.is_staff %}
                     <th scope="col"></th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -28,7 +30,9 @@
                     <td></td>
                     <td>{{ticket.solicitante}}</td>
                     <td><a class="btn btn-primary" href="{% url 'progress_ticket' ticket.id %}">Ver m&aacute;s</a></td>
+                    {% if request.user.is_staff %}
                     <td><a class="btn btn-success" href="">Reactivar</a></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>

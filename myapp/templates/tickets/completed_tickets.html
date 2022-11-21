@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <h1 class="display-3 m-4 text-center">Tickets completados</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"># Ticket</th>
+                    <th scope="col">Asunto</th>
+                    <th scope="col">Fecha y hora del registro</th>
+                    <th scope="col">Ultimo estado</th>
+                    <th scope="col">Responsable</th>
+                    <th scope="col">Solicitante</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <th scope="row">{{ticket.id}}</th>
+                    <td>{{ticket.asunto}}</td>
+                    <td>{{ticket.fecha_solicitud}} - {{ticket.hora_solicitud}}</td>
+                    <td>{{registros}}</td>
+                    <td></td>
+                    <td>{{ticket.solicitante}}</td>
+                    <td><a class="btn btn-primary" href="{% url 'progress_ticket' ticket.id %}">Ver m&aacute;s</a></td>
+                    <td><a class="btn btn-success" href="">Reactivar</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}

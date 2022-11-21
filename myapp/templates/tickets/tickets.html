@@ -24,9 +24,12 @@
                                 </button>
                             </form>
                             {% if user.is_staff %}
-                            <button class="btn btn-dark">
-                                Atendido
-                            </button>
+                            <form action="{% url 'completed_ticket' ticket.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-dark">
+                                    Atendido
+                                </button>
+                            </form>
                             {% endif %}
                             <form action="{# url 'delete_ticket' ticket.id #}" method="POST">
                                 {% csrf_token %}

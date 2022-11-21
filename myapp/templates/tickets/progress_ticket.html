@@ -18,8 +18,20 @@
 
 <main class="container">
     <div class="row">
+        <div class="d-flex justify-content-start mt-3">
+            <h1 class="display-4">Ticket #{{ticket.id}}</h1>
+            {% if user.is_staff %}
+            <form action="{% url 'completed_ticket' ticket.id %}">
+                {% csrf_token %}
+                <button class="btn btn-success">
+                    Atendido
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
         {# BLOKE 1 TOP#}
-        <h1 class="display-4">Ticket #{{ticket.id}}</h1>
         {% if user.is_staff %}
         <div class="col-md-4 ">
             <div class="card card-body">
@@ -60,7 +72,7 @@
                     </div>
                 </form>
             </div>
-            {% endif %}
+
             <div class="col-md card card-body mt-3">
                 <form method="post" action="{% url 'add_ticket_to_area' ticket.id %}">
                     <h1 class="display-6">Areas</h1>
@@ -84,7 +96,7 @@
                                 {% for area in area_actual%}
                               <tr>
                                 <th scope="row">{{area}}</th>
-                                <td><a class="btn btn-danger" href="">Eliminar</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'delete_ticket_to_area' ticket.id %}">Eliminar</a></td>
                               </tr>
                               {% endfor %}
                             </tbody>
@@ -104,44 +116,45 @@
                 <h1 class="display-4"> Reporte </h1>
             </div>
         </div>
-        <div class="col-md-12 mb-3">
-        <div class="col-md mt-4">
+        {% endif %}
+        <div class="col-md mb-3">
             <h1 class="display-3"> Historial </h1>
-            <table class="table table-striped">
-                <thead>
-                  <tr>
-                    {% if user.is_staff %}
-                    <th scope="col">ID HISTORIAL</th>
-                    {% endif %}
-                    <th scope="col">ESTADO</th>
-                    <th scope="col">FECHA</th>
-                    <th scope="col">HORA</th>
-                    <th scope="col">RESPONSABLE</th>
-                    {% if user.is_staff %}
-                    <th scope="col">COMENTARIO</th>
-                    <th scope="col"></th>
-                    {% endif %}
-                  </tr>
-                </thead>
-                <tbody>
-                {% for registro in registros %}
-                  <tr>
-                    {% if user.is_staff %}
-                    <th scope="row"># {{registro.id}}</th>
-                    {% endif %}
-                    <td>{{registro.estado.desc}}</td>
-                    <td>{{registro.fecha_estado}}</td>
-                    <td>{{registro.hora_estado}}</td>
-                    <td>{{registro.responsable}}</td>
-                    {% if user.is_staff %}
-                    <td>{{registro.comment_estado}}</td>
-                    <td><a class="btn btn-danger" href="">Eliminar</a></td>
-                    {% endif %}
-                  </tr>
-                {% endfor%}
-                </tbody>
-              </table>
-        </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        {% if user.is_staff %}
+                        <th scope="col">ID HISTORIAL</th>
+                        {% endif %}
+                        <th scope="col">ESTADO</th>
+                        <th scope="col">FECHA</th>
+                        <th scope="col">HORA</th>
+                        <th scope="col">RESPONSABLE</th>
+                        {% if user.is_staff %}
+                        <th scope="col">COMENTARIO</th>
+                        <th scope="col"></th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for registro in registros %}
+                    <tr>
+                        {% if user.is_staff %}
+                        <th scope="row"># {{registro.id}}</th>
+                        {% endif %}
+                        <td>{{registro.estado.desc}}</td>
+                        <td>{{registro.fecha_estado}}</td>
+                        <td>{{registro.hora_estado}}</td>
+                        <td>{{registro.responsable}}</td>
+                        {% if user.is_staff %}
+                        <td>{{registro.comment_estado}}</td>
+                        <td><a class="btn btn-danger" href="">Eliminar</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor%}
+                    </tbody>
+                </table>
+            </div>
     </div>
 </main>
 

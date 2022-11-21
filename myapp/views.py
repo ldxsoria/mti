@@ -50,7 +50,7 @@ def main(request):
 def tickets(request):
     if request.user.is_staff:
         #https://stackoverflow.com/questions/7590692/django-get-unique-object-list-from-queryset
-        tickets = Ticket.objects.all().exclude(completado=True)
+        tickets = Ticket.objects.all().exclude(completado=True).order_by('-id')
         #print(HistorialTicket.objects.order_by('id').distinct('id'))
         #print(HistorialTicket.objects.all().distinct('ticket_id'))
         #print(HistorialTicket.objects.order_by('-id').distinct())
@@ -66,6 +66,31 @@ def tickets(request):
             'tickets': tickets,
             'title': 'Mis tickets pendientes'
         })
+
+@login_required
+def completed_tickets(request):
+    if request.user.is_staff:
+        tickets = Ticket.objects.filter(completado=True).order_by('-id')
+        for ticket in tickets:
+            print(ticket.id)
+            #registro = Registro.objects.filter(ticket__id=ticket.id).order_by('-id')[:1]
+            #registro = Registro.objects.filter(ticket_id=ticket.id, ticket__completado=True)
+            ticket = Ticket.objects.get(id=ticket.id)
+            registro =  ticket.registro.order_by('-id')[:1].values()
+            read = Registro.objects.filter(ticket__id=ticket.id).order_by('-id')[:1]
+            print(read.query)
+        
+        return render(request, 'tickets/completed_tickets.html', {
+            'tickets': tickets,
+            'title': 'Tickets nuevos',
+        })
+    else:
+        tickets = Ticket.objects.filter(solicitante_id=request.user.id, completado=True)
+        return render(request, 'tickets/completed_tickets.html', {
+            'tickets': tickets,
+            'title': 'Mis tickets pendientes'
+        })
+
 
 @login_required
 def create_ticket(request):
@@ -163,4 +188,29 @@ def add_ticket_to_area(request, ticket_id):
             area.save()
     
             return redirect('progress_ticket', ticket_id)
+
+@login_required
+def delete_ticket_to_area(request, ticket_id):
+    if request.user.is_staff:
+        if request.method == 'POST':
+            #OBTENGO EL ID DE LA LA PETICION
+            ticket = Ticket.objects.get(id=ticket_id)
+            #OBTENGO EL AREA SELECIONA DE FORM POR EL POST
+            area = Area.objects.get(cod_area=request.POST['area_delete'])
+            #ASIGNO EL TICKET A AREA
+            area.ticket.delete(ticket)
+            area.save()
+    
+            return redirect('progress_ticket', ticket_id)
+
+@login_required
+def completed_ticket(request, ticket_id):
+    ticket = Ticket.objects.get(id=ticket_id)
+    ticket.completado = True
+    new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=6))#6 - RESUELTO
+    new_registro.save()
+    ticket.registro.add(new_registro)
+    ticket.save()
+   
+    return redirect('tickets')
         

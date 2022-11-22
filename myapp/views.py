@@ -13,6 +13,12 @@ from django.contrib.auth.decorators import login_required #MAIN
 #MY REQUIREMENTS
 from .forms import TicketForm, RegistroForm
 
+#IMPORT CSV REQUIREMENTS
+import csv
+
+
+##########################################################################################################
+
 # Create your views here.
 def signin(request):
     #Si esta autenticado la pagina principal debe de ser main
@@ -214,3 +220,41 @@ def completed_ticket(request, ticket_id):
    
     return redirect('tickets')
         
+def export_csv(request):
+    #Query
+    queryset = Ticket.objects.all()
+
+    #Obtener campos del modelo
+    options = Ticket._meta #AQUI ESTAN LOS CAMPOS DEL MODELO
+    fields = [field.name for field in options.fields]
+    #['id',...]
+
+    #Construir respuesta
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = "atachment; filename=tickets.csv"
+
+    writer = csv.writer(response)
+    writer.writerow([options.get_field(field).verbose_name for field in fields])
+    #Escribiendo data
+    for obj in queryset:
+        writer.writerow(getattr(obj, field) for field in fields)
+    
+    return response
+
+def import_csv(request):
+    usuarios = []
+    with open("example.csv", "r") as csv_file:
+        data = list(csv.reader(csv_file, delimiter=","))
+        for row in data [1:]:
+            usuarios.append(
+                User(
+                    username = row[0],
+                    first_name = row[1],
+                    last_name = row[2],
+                    email=row[3]
+                )
+            )
+    if len(usuarios) > 0:
+        User.objects.bulk_create(usuarios)
+
+    return HttpResponse("Successfully imported")

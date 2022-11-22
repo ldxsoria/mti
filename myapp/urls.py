@@ -15,6 +15,8 @@ urlpatterns = [
     path('ticket/<int:ticket_id>/area', views.add_ticket_to_area, name = 'add_ticket_to_area'),
     path('ticket/<int:ticket_id>/<str:cod_area>/del', views.delete_ticket_to_area, name = 'delete_ticket_to_area'),
     path('ticket/<int:ticket_id>/completed', views.completed_ticket, name = 'completed_ticket'),
-    path('tickets/completed', views.completed_tickets, name = 'completed_tickets')
+    path('tickets/completed', views.completed_tickets, name = 'completed_tickets'),
     #URL TESTING
+    path('tickets/export', views.export_csv, name = 'export_tickets_csv'),
+    path('users/import', views.import_csv, name = 'import_users_csv'),
     ]

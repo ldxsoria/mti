@@ -1,17 +1,25 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 
 <main class="container py-5">
-    <section class="card card-body">
-        <h1 class="display-1 text-center ">¡Hola, {{user.first_name}}!</h1>
-        <p class="text-center">El objetivo de la plataforma es apoyar el registro y atender oportunamente los requerimientos</p>
-        <p class="text-center">del &aacute;rea de Sistemas.</p>
-        <p class="text-center"><strong>¿Deseas crear un ticket de atención?</strong></p>
-        <div class="d-flex justify-content-evenly">
-            <a class="btn btn-primary" href="{% url 'create_ticket' %}">
-                Generar ticket
-            </a>
+    <section >
+
+        <!--p class="text-center mb-5">El objetivo de la plataforma es apoyar el registro y atender oportunamente los requerimientos <br>del &aacute;rea de Sistemas.</p-->
+        <div class="row">
+            <h1 class="display-1 text-center mb-5 ">¡Hola, {{user.first_name}}!</h1>
+            <div class="d-flex d-flex justify-content-around">
+                <div class="col-md-4">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="{% static 'image/ticket_bg.webp' %}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title"><strong>Genera un ticket de atenci&oacute;n</strong></h5>
+                            <p class="card-text">Un ticket es el sistema utilizado para registrar una solicitud de ayuda ante inconvenientes que esté presentando el usuario con el servicio.</p>
+                            <a href="{% url 'create_ticket' %}" class="btn btn-primary">Crear</a>
+                        </div>
+                      </div>
+                </div>
+            </div>
         </div>
     </section>    
 </main>

@@ -161,6 +161,7 @@ def progress_ticket(request, ticket_id):
         except ValueError:
             return HttpResponse('No funciono ERROR')
 
+@login_required
 def add_registro_ticket(request, ticket_id): 
     if request.method == 'GET':
         return HttpResponse('ERROR add_registro_ticket')
@@ -220,14 +221,15 @@ def completed_ticket(request, ticket_id):
     ticket.save()
    
     return redirect('tickets')
-        
-def export_csv(request):
 
-    tickets_resource = resources.modelresource_factory(model=Ticket)()
-    dataset = tickets_resource.export()
-    response = HttpResponse(dataset.csv, content_type='text/csv')
-    response['Content-Disposition'] = 'atachment; filename="tickets_export.csv"'
-    return response
+@login_required       
+def export_csv(request):
+    if request.user.is_staff:
+        tickets_resource = resources.modelresource_factory(model=Ticket)()
+        dataset = tickets_resource.export()
+        response = HttpResponse(dataset.csv, content_type='text/csv')
+        response['Content-Disposition'] = 'atachment; filename="tickets_export.csv"'
+        return response
 
     """
     #Query
@@ -250,14 +252,19 @@ def export_csv(request):
     
     return response
     """
+
+
+@login_required    
 def import_csv(request):
-    #libreria import_export
-    with open("example.csv", "r") as csv_file:
+
+    if request.user.is_staff:
+        #libreria import_export
         import tablib
 
-        usuarios_resource = resources.modelresource_factory(model=User)()
-        dataset = tablib.Dataset(headers=[field.name for field in User._meta.fields]).load(csv_file)
-        result = usuarios_resource.import_data(dataset, dry_run=True)
+        with open("example.csv", "r") as csv_file:
+            usuarios_resource = resources.modelresource_factory(model=User)()
+            dataset = tablib.Dataset(headers=[field.name for field in User._meta.fields]).load(csv_file)
+            result = usuarios_resource.import_data(dataset, dry_run=True)
         if not result.has_errors():
             usuarios_resource.import_data(dataset, dry_run=False)
         return HttpResponse(

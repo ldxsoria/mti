@@ -15,6 +15,7 @@ from .forms import TicketForm, RegistroForm
 
 #IMPORT CSV REQUIREMENTS
 import csv
+from import_export import resources
 
 
 ##########################################################################################################
@@ -221,6 +222,14 @@ def completed_ticket(request, ticket_id):
     return redirect('tickets')
         
 def export_csv(request):
+
+    tickets_resource = resources.modelresource_factory(model=Ticket)()
+    dataset = tickets_resource.export()
+    response = HttpResponse(dataset.csv, content_type='text/csv')
+    response['Content-Disposition'] = 'atachment; filename="tickets_export.csv"'
+    return response
+
+    """
     #Query
     queryset = Ticket.objects.all()
 
@@ -240,8 +249,24 @@ def export_csv(request):
         writer.writerow(getattr(obj, field) for field in fields)
     
     return response
-
+    """
 def import_csv(request):
+    #libreria import_export
+    with open("example.csv", "r") as csv_file:
+        import tablib
+
+        usuarios_resource = resources.modelresource_factory(model=User)()
+        dataset = tablib.Dataset(headers=[field.name for field in User._meta.fields]).load(csv_file)
+        result = usuarios_resource.import_data(dataset, dry_run=True)
+        if not result.has_errors():
+            usuarios_resource.import_data(dataset, dry_run=False)
+        return HttpResponse(
+            "Users successfully imported"
+        )
+
+
+    """
+    NATIVE IMPORT CSV
     usuarios = []
     with open("example.csv", "r") as csv_file:
         data = list(csv.reader(csv_file, delimiter=","))
@@ -258,3 +283,4 @@ def import_csv(request):
         User.objects.bulk_create(usuarios)
 
     return HttpResponse("Successfully imported")
+    """

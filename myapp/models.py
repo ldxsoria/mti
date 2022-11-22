@@ -49,6 +49,7 @@ class Ticket(models.Model):
 class Area(models.Model):
     cod_area = models.CharField(primary_key=True, max_length=10)
     descripcion = models.CharField(max_length=35)
+    siglas = models.CharField(max_length=50, blank=True)
     #UN AREA TIENE MUCHOS TICKTES
     ticket = models.ManyToManyField(Ticket, blank=True)
 

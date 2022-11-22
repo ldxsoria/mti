@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required #MAIN
 from .forms import TicketForm, RegistroForm
 
 #IMPORT CSV REQUIREMENTS
-import csv
+import csv, io
 from import_export import resources
 
 
@@ -291,3 +291,46 @@ def import_csv(request):
 
     return HttpResponse("Successfully imported")
     """
+
+@login_required()
+def areas_import(request):
+    if request.user.is_staff:
+        template = 'areas/areas_import.html'
+        context = {
+            'type' : 'primary',
+            'alert' : 'Por el momento solo se pueden actualizar las áreas'
+        }
+        if request.method == 'GET':
+            return render(request, template, context)
+
+        try:
+            csv_file = request.FILES['file']
+            if not csv_file.name.endswith('.csv'):
+                context = {
+                'type' : 'danger',
+                'alert' : '¡Porfavor selecione un archivo <strong>.csv</strong>!'
+            }
+            
+            data_set = csv_file.read().decode('UTF-8')
+            io_string = io.StringIO(data_set)
+            next(io_string)
+            for column in csv.reader(io_string, delimiter=',', quotechar='|'):
+                created = Area.objects.update_or_create(
+                    cod_area=column[0],
+                    descripcion=column[1],
+                    siglas=column[2],
+                )
+            context = {
+                'type' : 'success',
+                'alert' : '¡El CSV fue cargardo con exito!'
+            }
+            return render(request, template, context)
+        except:
+            context = {
+            'type' : 'danger',
+            'alert' : 'Selecciona un .CSV'
+            }
+            return render(request, template, context)
+
+
+    

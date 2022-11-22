@@ -298,7 +298,7 @@ def areas_import(request):
         template = 'areas/areas_import.html'
         context = {
             'type' : 'primary',
-            'alert' : 'Por el momento solo se pueden actualizar las áreas'
+            'alert' : 'Por el momento solo se pueden actualizar las áreas!'
         }
         if request.method == 'GET':
             return render(request, template, context)

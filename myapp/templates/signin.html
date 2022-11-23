@@ -17,9 +17,11 @@
         <h3 class="display-3 text-center">SIGMA MTI</h3>
         <h6 class="text-center mb-5">(Modulo de Tecnologias de la Información)</h3>
         <form method="POST" class="card card-body">
+            {% if error %}
             <div class="alert alert-danger" role="alert">
                 {{error}}
             </div>
+            {% endif %}
             {% csrf_token %}
             <div class="mb-3">
                 <label for="username">Usuario:</label>

@@ -1,0 +1,28 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <h3>Hola, {{user.first_name}}:</h3>
+        <h1>¡Tú ticket fue registrado con exito!</h1>
+        <br>
+        <h4>Est&aacute; es la informaci&oacute;n que recibimos:</h4>
+        <ul>
+            <li> Asunto: {{ticket.asunto}}</li>
+            <li> Descripcion: {{ticket.descripcion}}</li>
+            <li> Solicitado por: {{ticket.solicitante}}</li>
+            <li> Fecha de registro del ticket: {{ticket.fecha_solicitud}} a las {{ticket.hora_solicitud}}</li>
+        </ul>
+        <br>
+        <h4>Recuerda que para ver el estado de tu ticket, debes realizar los siguientes pasos:</h4>
+        <ol>
+            <li>Ingresar a SIGMA MIT</li>
+            <li>Ir a la opci&oacute;n Tickets > Tickets Pendientes</li>
+            <li>Seleccionar el bot&oacute;n "Ver progreso"</li>
+        </ol>
+        <br>
+        <p>Saludos cordiales,</p>
+        <p>Dpt. de Sistemas</p>
+        <br>
+        <p style="color: #948e8e;"><em>*** IMPORTANTE *** Asegurese de NO responder este correo, si necesita otro apoyo favor de generar un nuevo ticket desde SIGMA MIT, <strong>no seguir esta cadena,</strong> para que pueda ser atendido lo antes posible. Su paciencia y comprensión son apreciadas.</em></p>
+    </body>
+</html>

@@ -17,6 +17,38 @@ from .forms import TicketForm, RegistroForm
 import csv, io
 from import_export import resources
 
+#REQUISITOS PARA EL CORREO
+from django.template.loader import get_template
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+import threading
+
+
+#FUNCIONES_GENERALES##################################################################################
+def sendEmail(user, ticket=None):
+
+    #mail_staff = User.objects.filter(is_staff='1').get('email')
+    #print(mail_staff)
+    context = {
+        'user' : user,
+        'ticket' : ticket
+    }
+
+    template = get_template('tickets/correo_new_ticket.html')
+    content = template.render(context)
+
+    email = EmailMultiAlternatives(
+        f'Ticket #{ticket.id}',
+        '',
+        settings.EMAIL_HOST_USER,
+        [user.email, 'sistemas@sanjosemaristas.edu.pe']
+        
+    )
+
+    email.attach_alternative(content, 'text/html')
+    email.send()
+
+
 
 ##########################################################################################################
 
@@ -117,6 +149,9 @@ def create_ticket(request):
             new_registro.save()
             new_ticket.registro.add(new_registro)
             new_ticket.save()
+            #------------
+            #ENVIAR CORREO
+            sendEmail(request.user, new_ticket)
             #------------
             return redirect('main')
             #return redirect(f'{new_ticket.id}/progress')
@@ -292,7 +327,7 @@ def import_csv(request):
     return HttpResponse("Successfully imported")
     """
 
-@login_required()
+@login_required
 def areas_import(request):
     if request.user.is_staff:
         template = 'areas/areas_import.html'

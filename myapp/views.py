@@ -21,13 +21,14 @@ from import_export import resources
 from django.template.loader import get_template
 from django.core.mail import EmailMultiAlternatives
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site #para obtener el dominio actual
 import threading
 
 
 #FUNCIONES_GENERALES##################################################################################
 def create_mail(user, cc_mails, subject, template_path, context):
 
-    template = get_template('tickets/correo_new_ticket.html')
+    template = get_template(template_path)
     content = template.render(context)
 
     mail = EmailMultiAlternatives(
@@ -43,8 +44,6 @@ def create_mail(user, cc_mails, subject, template_path, context):
     mail.attach_alternative(content, 'text/html')
     #email.send()
     return mail
-
-
 
 ##########################################################################################################
 
@@ -141,9 +140,11 @@ def create_ticket(request):
             cc_mails = ['ldxsoria@gmail.com', 'ldxnotes@gmail.com']
             subject= f'Ticket #{new_ticket.id}'
             template_path = 'tickets/correo_new_ticket.html'
+            dominio = get_current_site(request).domain
             context = {
                 'user' : request.user,
-                'ticket' : new_ticket
+                'ticket' : new_ticket,
+                'dominio' : dominio
             }
             new_ticket_mail = create_mail(request.user, cc_mails, subject, template_path, context)
             new_ticket_mail.send(fail_silently=False)

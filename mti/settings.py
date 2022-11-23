@@ -31,6 +31,11 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+APPS = [
+    'import_export',
+    'naomi',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,8 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
-    'import_export',
-    'naomi',
 ]
 
 MIDDLEWARE = [
@@ -144,8 +147,8 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('USER_MAIL_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
 
-
+"""
 if DEBUG:
     EMAIL_BACKEND = "naomi.mail.backends.naomi.NaomiBackend"
     EMAIL_FILE_PATH = "./tmp"
-
+"""

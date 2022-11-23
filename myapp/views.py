@@ -42,8 +42,9 @@ def create_mail(user, cc_mails, subject, template_path, context):
     )
 
     mail.attach_alternative(content, 'text/html')
-    #email.send()
-    return mail
+    mail.send(fail_silently=False)
+    #return mail
+
 
 ##########################################################################################################
 
@@ -146,8 +147,15 @@ def create_ticket(request):
                 'ticket' : new_ticket,
                 'dominio' : dominio
             }
-            new_ticket_mail = create_mail(request.user, cc_mails, subject, template_path, context)
-            new_ticket_mail.send(fail_silently=False)
+            #ENVIO NORMAL
+            #new_ticket_mail = create_mail(request.user, cc_mails, subject, template_path, context)
+            #new_ticket_mail.send(fail_silently=False)
+            
+            thread = threading.Thread(
+                target= create_mail,
+                args=(request.user, cc_mails, subject, template_path, context)
+            )
+            thread.start()
             #------------
             return redirect('main')
             #return redirect(f'{new_ticket.id}/progress')

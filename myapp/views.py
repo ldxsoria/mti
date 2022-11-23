@@ -292,7 +292,6 @@ def export_csv(request):
     return response
     """
 
-
 @login_required    
 def import_csv(request):
 
@@ -334,7 +333,7 @@ def import_csv(request):
 @login_required
 def areas_import(request):
     if request.user.is_staff:
-        template = 'areas/areas_import.html'
+        template = 'general/import.html'
         context = {
             'type' : 'primary',
             'alert' : 'Por el momento solo se pueden actualizar las áreas!'
@@ -344,12 +343,6 @@ def areas_import(request):
 
         try:
             csv_file = request.FILES['file']
-            if not csv_file.name.endswith('.csv'):
-                context = {
-                'type' : 'danger',
-                'alert' : '¡Porfavor selecione un archivo <strong>.csv</strong>!'
-            }
-            
             data_set = csv_file.read().decode('UTF-8')
             io_string = io.StringIO(data_set)
             next(io_string)
@@ -370,6 +363,42 @@ def areas_import(request):
             'alert' : 'Selecciona un .CSV'
             }
             return render(request, template, context)
+
+@login_required
+def users_import(request):
+    if request.user.is_staff:
+        template = 'general/import.html'
+        context = {
+            'type' : 'primary',
+            'alert' : 'Por el momento solo se pueden actualizar los users !'
+        }
+        if request.method == 'GET':
+            return render(request, template, context)
+
+        try:
+            csv_file = request.FILES['file']
+            
+            data_set = csv_file.read().decode('UTF-8')
+            io_string = io.StringIO(data_set)
+            next(io_string)
+            for column in csv.reader(io_string, delimiter=',', quotechar='|'):
+                created = User.objects.update_or_create(
+                    username=column[0],
+                    first_name=column[1],
+                    email=column[2]
+                )
+            context = {
+                'type' : 'success',
+                'alert' : '¡El CSV fue cargardo con exito!'
+            }
+            return render(request, template, context)
+        except:
+            context = {
+            'type' : 'danger',
+            'alert' : 'Selecciona un .CSV'
+            }
+            return render(request, template, context)
+
 
 
     

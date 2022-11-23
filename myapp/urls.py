@@ -18,7 +18,7 @@ urlpatterns = [
     path('tickets/completed', views.completed_tickets, name = 'completed_tickets'),
     #URL TESTING
     path('tickets/export', views.export_csv, name = 'export_tickets_csv'),
-    path('users/import', views.import_csv, name = 'import_users_csv'),
     #UPLOAD URLS
-    path('areas/import', views.areas_import)
+    path('areas/import', views.areas_import, name='import_areas'),
+    path('users/import', views.users_import, name='import_users')
     ]

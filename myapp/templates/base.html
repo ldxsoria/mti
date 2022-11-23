@@ -22,9 +22,15 @@
             <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
               {%if user.is_staff %}
-              <li class="nav-item">
-                <a class="nav-link" href="">Usuarios</a>
-              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Import/Export</a>
+                <ul class="dropdown-menu">
+                  {% if user.is_staff %}
+                  <li><a class="dropdown-item" href="{% url 'import_users' %}">Usuarios</a></li>
+                  <li><a class="dropdown-item" href="{% url 'import_areas' %}">Areas</a></li>
+                  {% endif %}
+                </ul>
+              </li>   
               <li class="nav-item">
                 <a class="nav-link" href="">Inventario</a>
               </li>

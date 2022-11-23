@@ -298,7 +298,7 @@ def auto_import(request, model):
         context = {
 
         }
-        if model == 'areas' or model == 'users':
+        if model == 'areas' or model == 'users' or model == 'estados-ticket':
             if request.method == 'GET':
                 return render(request, template, context)
             try:
@@ -324,6 +324,13 @@ def auto_import(request, model):
                             email=column[3],
                             password=make_password(column[4])
                         )
+                elif model == 'estados-ticket':
+                    for column in csv.reader(io_string, delimiter=',', quotechar='|'):
+                        created = EstadosTicket.objects.update_or_create(
+                            estado=column[0],
+                            desc=column[1],
+                        )                    
+
                 else:
                     return redirect('main')
 

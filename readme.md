@@ -1,5 +1,6 @@
-# Clonar proyecto
-Primero clonamos el proyecto
+# Requisitos
+1) Instalar GIT, Python3 y tener pip-python3
+2) Clonar el proyecto
 
 # Configurar entorno
 Se recomienda instalar y usar virtualenv, para luego iniciar el entorno
@@ -30,6 +31,9 @@ Finamente, iniciamos el proyecto
 python manage.py runserver
 ```
 
-# Orientación
-1) Ingresamos al {dominio}/admin con la cuenta de superusuario
-2) Creamos las áreas (para que funcione el formulario para crear tickets)
+# ¿Comó usar la aplicación?
+1) Ingresamos al {{dominio}}/admin con la cuenta de superusuario
+2) Ingresamos a {{dominio}}/ y importamos lo siguiente desde un .csv:
+* Estados de los tickets de atención (int:estado, str:desc)
+* Usuarios (username,first_name,last_name,email,password)
+* Areas (str:cod_area, str: descrpition, str:siglas)

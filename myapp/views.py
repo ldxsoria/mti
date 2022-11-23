@@ -25,28 +25,24 @@ import threading
 
 
 #FUNCIONES_GENERALES##################################################################################
-def sendEmail(user, ticket=None):
-
-    #mail_staff = User.objects.filter(is_staff='1').get('email')
-    #print(mail_staff)
-    context = {
-        'user' : user,
-        'ticket' : ticket
-    }
+def create_mail(user, cc_mails, subject, template_path, context):
 
     template = get_template('tickets/correo_new_ticket.html')
     content = template.render(context)
 
-    email = EmailMultiAlternatives(
-        f'Ticket #{ticket.id}',
-        '',
-        settings.EMAIL_HOST_USER,
-        [user.email, 'sistemas@sanjosemaristas.edu.pe']
-        
+    mail = EmailMultiAlternatives(
+        subject=subject,
+        body=content,
+        from_email=settings.EMAIL_HOST_USER,
+        to=[
+            user.email,
+        ],
+        cc= cc_mails
     )
 
-    email.attach_alternative(content, 'text/html')
-    email.send()
+    mail.attach_alternative(content, 'text/html')
+    #email.send()
+    return mail
 
 
 
@@ -90,11 +86,6 @@ def tickets(request):
     if request.user.is_staff:
         #https://stackoverflow.com/questions/7590692/django-get-unique-object-list-from-queryset
         tickets = Ticket.objects.all().exclude(completado=True).order_by('-id')
-        #print(HistorialTicket.objects.order_by('id').distinct('id'))
-        #print(HistorialTicket.objects.all().distinct('ticket_id'))
-        #print(HistorialTicket.objects.order_by('-id').distinct())
-        #x = Ticket.registros.estado
-        #print(x)
         return render(request, 'tickets/tickets.html', {
             'tickets': tickets,
             'title': 'Tickets nuevos'
@@ -111,13 +102,9 @@ def completed_tickets(request):
     if request.user.is_staff:
         tickets = Ticket.objects.filter(completado=True).order_by('-id')
         for ticket in tickets:
-            print(ticket.id)
-            #registro = Registro.objects.filter(ticket__id=ticket.id).order_by('-id')[:1]
-            #registro = Registro.objects.filter(ticket_id=ticket.id, ticket__completado=True)
             ticket = Ticket.objects.get(id=ticket.id)
             registro =  ticket.registro.order_by('-id')[:1].values()
             read = Registro.objects.filter(ticket__id=ticket.id).order_by('-id')[:1]
-            #print(read.query)
         
         return render(request, 'tickets/completed_tickets.html', {
             'tickets': tickets,
@@ -151,7 +138,15 @@ def create_ticket(request):
             new_ticket.save()
             #------------
             #ENVIAR CORREO
-            sendEmail(request.user, new_ticket)
+            cc_mails = ['ldxsoria@gmail.com', 'ldxnotes@gmail.com']
+            subject= f'Ticket #{new_ticket.id}'
+            template_path = 'tickets/correo_new_ticket.html'
+            context = {
+                'user' : request.user,
+                'ticket' : new_ticket
+            }
+            new_ticket_mail = create_mail(request.user, cc_mails, subject, template_path, context)
+            new_ticket_mail.send(fail_silently=False)
             #------------
             return redirect('main')
             #return redirect(f'{new_ticket.id}/progress')

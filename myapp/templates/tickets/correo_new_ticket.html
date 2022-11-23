@@ -4,13 +4,10 @@
     <body>
         <h3>Hola, {{user.first_name}}:</h3>
         <h1>¡Tú ticket fue registrado con exito!</h1>
-        <br>
-        <h4>Est&aacute; es la informaci&oacute;n que recibimos:</h4>
         <ul>
-            <li> Asunto: {{ticket.asunto}}</li>
-            <li> Descripcion: {{ticket.descripcion}}</li>
-            <li> Solicitado por: {{ticket.solicitante}}</li>
-            <li> Fecha de registro del ticket: {{ticket.fecha_solicitud}} a las {{ticket.hora_solicitud}}</li>
+            <li> <strong>Asunto:</strong> {{ticket.asunto}}</li>
+            <li> <strong>Descripcion:</strong> {{ticket.descripcion}}</li>
+            <li> <strong>Fecha de registro del ticket:</strong> {{ticket.fecha_solicitud}} a las {{ticket.hora_solicitud}}</li>
         </ul>
         <br>
         <h4>Recuerda que para ver el estado de tu ticket, debes realizar los siguientes pasos:</h4>

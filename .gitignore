@@ -15,4 +15,6 @@ ENV/
 env.bak/ 
 venv.bak/ 
 
+#temp naomi
+temp/*.html
 

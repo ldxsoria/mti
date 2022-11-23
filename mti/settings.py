@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp',
     'import_export',
+    'naomi',
 ]
 
 MIDDLEWARE = [
@@ -142,4 +143,9 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('USER_MAIL_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+
+
+if DEBUG:
+    EMAIL_BACKEND = "naomi.mail.backends.naomi.NaomiBackend"
+    EMAIL_FILE_PATH = "./tmp"
 

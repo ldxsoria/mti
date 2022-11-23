@@ -256,6 +256,8 @@ def completed_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id)
     ticket.completado = True
     new_registro = Registro(responsable=request.user, estado=EstadosTicket(estado=6))#6 - RESUELTO
+    #ticket.fecha_cierre = Timezon
+    #ticket.hora_cierre =
     new_registro.save()
     ticket.registro.add(new_registro)
     ticket.save()

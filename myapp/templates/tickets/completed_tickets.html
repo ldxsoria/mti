@@ -11,8 +11,7 @@
                     <th scope="col"># Ticket</th>
                     <th scope="col">Asunto</th>
                     <th scope="col">Fecha y hora del registro</th>
-                    <th scope="col">Ultimo estado</th>
-                    <th scope="col">Responsable</th>
+                    <th scope="col">Fecha y hora del cierre</th>
                     <th scope="col">Solicitante</th>
                     <th scope="col"></th>
                     {% if request.user.is_staff %}
@@ -26,8 +25,7 @@
                     <th scope="row">{{ticket.id}}</th>
                     <td>{{ticket.asunto}}</td>
                     <td>{{ticket.fecha_solicitud}} - {{ticket.hora_solicitud}}</td>
-                    <td>{{registros}}</td>
-                    <td></td>
+                    <td>{{ticket.fecha_cierre}} - {{ticket.hora_cierre}}</td>
                     <td>{{ticket.solicitante}}</td>
                     <td><a class="btn btn-primary" href="{% url 'progress_ticket' ticket.id %}">Ver m&aacute;s</a></td>
                     {% if request.user.is_staff %}

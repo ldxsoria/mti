@@ -16,6 +16,7 @@ from .forms import TicketForm, RegistroForm
 #IMPORT CSV REQUIREMENTS
 import csv, io
 from import_export import resources
+from django.contrib.auth.hashers import make_password #USER > PASSWORD
 
 #REQUISITOS PARA EL CORREO
 from django.template.loader import get_template
@@ -260,6 +261,7 @@ def completed_ticket(request, ticket_id):
     ticket.save()
    
     return redirect('tickets')
+#EXPORT VIEWS##########################################################################################
 
 @login_required       
 def export_csv(request):
@@ -270,27 +272,7 @@ def export_csv(request):
         response['Content-Disposition'] = 'atachment; filename="tickets_export.csv"'
         return response
 
-    """
-    #Query
-    queryset = Ticket.objects.all()
-
-    #Obtener campos del modelo
-    options = Ticket._meta #AQUI ESTAN LOS CAMPOS DEL MODELO
-    fields = [field.name for field in options.fields]
-    #['id',...]
-
-    #Construir respuesta
-    response = HttpResponse(content_type = 'text/csv')
-    response['Content-Disposition'] = "atachment; filename=tickets.csv"
-
-    writer = csv.writer(response)
-    writer.writerow([options.get_field(field).verbose_name for field in fields])
-    #Escribiendo data
-    for obj in queryset:
-        writer.writerow(getattr(obj, field) for field in fields)
-    
-    return response
-    """
+#IMPORT VIEWS##########################################################################################
 
 @login_required    
 def import_csv(request):
@@ -309,95 +291,56 @@ def import_csv(request):
             "Users successfully imported"
         )
 
-
-    """
-    NATIVE IMPORT CSV
-    usuarios = []
-    with open("example.csv", "r") as csv_file:
-        data = list(csv.reader(csv_file, delimiter=","))
-        for row in data [1:]:
-            usuarios.append(
-                User(
-                    username = row[0],
-                    first_name = row[1],
-                    last_name = row[2],
-                    email=row[3]
-                )
-            )
-    if len(usuarios) > 0:
-        User.objects.bulk_create(usuarios)
-
-    return HttpResponse("Successfully imported")
-    """
-
 @login_required
-def areas_import(request):
+def auto_import(request, model):
     if request.user.is_staff:
         template = 'general/import.html'
         context = {
-            'type' : 'primary',
-            'alert' : 'Por el momento solo se pueden actualizar las áreas!'
+
         }
-        if request.method == 'GET':
-            return render(request, template, context)
+        if model == 'areas' or model == 'users':
+            if request.method == 'GET':
+                return render(request, template, context)
+            try:
+                csv_file = request.FILES['file']
+                data_set = csv_file.read().decode('UTF-8')
+                io_string = io.StringIO(data_set)
+                next(io_string)
 
-        try:
-            csv_file = request.FILES['file']
-            data_set = csv_file.read().decode('UTF-8')
-            io_string = io.StringIO(data_set)
-            next(io_string)
-            for column in csv.reader(io_string, delimiter=',', quotechar='|'):
-                created = Area.objects.update_or_create(
-                    cod_area=column[0],
-                    descripcion=column[1],
-                    siglas=column[2],
-                )
-            context = {
-                'type' : 'success',
-                'alert' : '¡El CSV fue cargardo con exito!'
-            }
-            return render(request, template, context)
-        except:
-            context = {
-            'type' : 'danger',
-            'alert' : 'Selecciona un .CSV'
-            }
-            return render(request, template, context)
+                if model == 'areas':
+                    for column in csv.reader(io_string, delimiter=',', quotechar='|'):
+                        created = Area.objects.update_or_create(
+                            cod_area=column[0],
+                            descripcion=column[1],
+                            siglas=column[2],
+                        )
 
-@login_required
-def users_import(request):
-    if request.user.is_staff:
-        template = 'general/import.html'
-        context = {
-            'type' : 'primary',
-            'alert' : 'Por el momento solo se pueden actualizar los users !'
-        }
-        if request.method == 'GET':
-            return render(request, template, context)
+                elif model == 'users':
+                    for column in csv.reader(io_string, delimiter=',', quotechar='|'):
+                        created = User.objects.update_or_create(
+                            username=column[0],
+                            first_name=column[1],
+                            last_name=column[2],
+                            email=column[3],
+                            password=make_password(column[4])
+                        )
+                else:
+                    return redirect('main')
 
-        try:
-            csv_file = request.FILES['file']
+                context = {
+                    'type' : 'success',
+                    'alert' : '¡El CSV fue cargardo con exito!'
+                }
+                return render(request, template, context)
+            except:
+                context = {
+                'type' : 'danger',
+                'alert' : 'Selecciona un .CSV'
+                }
+                return render(request, template, context)
+        else:
+            return redirect('main')
             
-            data_set = csv_file.read().decode('UTF-8')
-            io_string = io.StringIO(data_set)
-            next(io_string)
-            for column in csv.reader(io_string, delimiter=',', quotechar='|'):
-                created = User.objects.update_or_create(
-                    username=column[0],
-                    first_name=column[1],
-                    email=column[2]
-                )
-            context = {
-                'type' : 'success',
-                'alert' : '¡El CSV fue cargardo con exito!'
-            }
-            return render(request, template, context)
-        except:
-            context = {
-            'type' : 'danger',
-            'alert' : 'Selecciona un .CSV'
-            }
-            return render(request, template, context)
 
 
 

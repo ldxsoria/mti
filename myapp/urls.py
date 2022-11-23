@@ -17,8 +17,8 @@ urlpatterns = [
     path('ticket/<int:ticket_id>/completed', views.completed_ticket, name = 'completed_ticket'),
     path('tickets/completed', views.completed_tickets, name = 'completed_tickets'),
     #URL TESTING
-    path('tickets/export', views.export_csv, name = 'export_tickets_csv'),
+    #path('tickets/export', views.export_csv, name = 'export_tickets_csv'),
     #UPLOAD URLS
-    path('areas/import', views.areas_import, name='import_areas'),
-    path('users/import', views.users_import, name='import_users')
+    path('import/<str:model>', views.auto_import, name='import_model'),
+    #path('users/import', views.users_import, name='import_users')
     ]
